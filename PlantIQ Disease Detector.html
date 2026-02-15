@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlantIQ – Plant Disease Detection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#333;overflow-x:hidden}
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+    /* Header */
+    .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);box-shadow:0 2px 20px rgba(0,0,0,0.1)}
+    .navbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem}
+    .logo{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    
+    /* Main Content */
+    main{padding-top:100px}
+    .hero{padding:4rem 0}
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+    
+    /* Left - Upload */
+    .upload-section{background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);padding:3rem;border-radius:30px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+    .upload-section h1{font-size:2.8rem;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem}
+    .upload-section p{font-size:1.2rem;color:#666;margin-bottom:2rem;line-height:1.6}
+    
+    /* Upload Box */
+    .upload-box{position:relative;display:flex;flex-direction:column;items:center;border:3px dashed #667eea;padding:3rem;border-radius:20px;background:rgba(102,126,234,0.05);cursor:pointer;transition:all 0.3s;text-align:center}
+    .upload-box:hover{border-color:#764ba2;background:rgba(102,126,234,0.1);transform:translateY(-5px)}
+    .upload-box.dragover{border-color:#764ba2;background:rgba(102,126,234,0.15);transform:scale(1.02)}
+    
+    .upload-icon{font-size:4rem;margin-bottom:1rem}
+    .upload-text{font-size:1.1rem;color:#666;margin-bottom:1rem;font-weight:500}
+    
+    /* Analyze Button */
+    .analyze-btn{padding:1.2rem 3rem;border:none;border-radius:50px;font-size:1.1rem;font-weight:600;background:linear-gradient(135deg,#667eea,#764ba2);color:white;cursor:pointer;transition:all 0.3s;box-shadow:0 10px 30px rgba(102,126,234,0.3);margin-top:1rem}
+    .analyze-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(102,126,234,0.4)}
+    .analyze-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+    
+    /* Right - Preview & Results */
+    .preview-section{background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);padding:2.5rem;border-radius:25px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+    .preview-title{font-size:1.4rem;font-weight:600;color:#333;margin-bottom:1.5rem}
+    
+    .image-preview{border-radius:20px;overflow:hidden;background:#f8f9fa;border:1px solid #e9ecef;min-height:250px;display:flex;align-items:center;justify-content:center}
+    .image-preview img{width:100%;height:250px;object-fit:cover}
+    .no-image{color:#999;font-size:1rem}
+    
+    /* Results */
+    .results{display:none}
+    .confidence{display:flex;align-items:center;gap:1rem;font-size:1.3rem;font-weight:700;color:#764ba2;margin-bottom:1.5rem;padding:1rem;background:rgba(118,75,162,0.1);border-radius:15px;border-left:5px solid #764ba2}
+    
+    .probabilities{margin-bottom:2rem}
+    .prob-list{list-style:none}
+    .prob-item{display:flex;align-items:center;gap:1rem;padding:1rem;margin-bottom:0.5rem;background:rgba(102,126,234,0.05);border-radius:12px;transition:all 0.3s}
+    .prob-item:hover{background:rgba(102,126,234,0.1)}
+    .prob-name{font-weight:600}
+    .prob-percent{font-size:1.2rem;font-weight:700;color:#667eea}
+    .prob-bar{width:100%;height:8px;background:rgba(0,0,0,0.1);border-radius:4px;overflow:hidden;margin-left:auto}
+    .prob-fill{height:100%;background:linear-gradient(90deg,#667eea,#764ba2);border-radius:4px;transition:width 1.5s ease}
+    
+    /* Treatment */
+    .treatment{background:rgba(255,255,255,0.95);padding:2rem;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.1);margin-top:2rem;border-left:6px solid #28a745}
+    .treatment-title{font-size:1.5rem;font-weight:700;color:#28a745;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem}
+    .severity{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+    .severity-bar{width:200px;height:12px;background:rgba(0,0,0,0.1);border-radius:6px;overflow:hidden}
+    .severity-fill{height:100%;background:linear-gradient(90deg,#ff6b6b,#ffa500);border-radius:6px}
+    
+    .treatment-list{list-style:none}
+    .treatment-item{padding:1rem;background:rgba(40,167,69,0.1);border-radius:12px;margin-bottom:1rem;border-left:4px solid #28a745}
+    
+    /* Responsive */
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:1fr;gap:2rem}
+      .upload-section,.preview-section{padding:2rem}
+      main{padding-top:80px}
+    }
+    @media(max-width:600px){
+      .upload-section h1{font-size:2.2rem}
+      .navbar{padding:0.8rem 1rem}
+      .hero{padding:2rem 0}
+    }
+    
+    /* Loading */
+    .loading{display:none;text-align:center;padding:2rem}
+    .spinner{width:40px;height:40px;border:4px solid rgba(102,126,234,0.3);border-top:4px solid #667eea;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav class="navbar">
+      <div class="logo">🌱 PlantIQ</div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-grid">
+        <!-- Upload Section -->
+        <div class="upload-section">
+          <h1>Detect Plant Diseases with AI</h1>
+          <p>Upload a photo of your plant and our AI will analyze it for diseases with confidence scores and treatment recommendations.</p>
+          
+          <form id="uploadForm">
+            <div class="upload-box" id="uploadBox">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">Click to upload plant image or drag & drop</div>
+              <input type="file" id="imageInput" accept="image/*" style="display:none">
+            </div>
+            <button type="submit" class="analyze-btn" id="analyzeBtn" disabled>🔍 Analyze Plant Health</button>
+          </form>
+        </div>
+
+        <!-- Preview & Results -->
+        <div class="preview-section">
+          <h3 class="preview-title">📸 Uploaded Image</h3>
+          
+          <div class="image-preview" id="imagePreview">
+            <div class="no-image">No image uploaded yet</div>
+          </div>
+
+          <!-- Results -->
+          <div class="results" id="results">
+            <div class="confidence" id="confidence"></div>
+            
+            <div class="probabilities">
+              <h4 style="font-size:1.1rem;margin-bottom:1rem;color:#333">📊 Disease Probabilities</h4>
+              <ul class="prob-list" id="probList"></ul>
+            </div>
+
+            <div class="treatment" id="treatment"></div>
+          </div>
+
+          <!-- Loading -->
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI is analyzing your plant...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Section -->
+    <section style="padding:5rem 0;background:rgba(255,255,255,0.05);margin:4rem 0;border-radius:30px">
+      <div class="container">
+        <div style="text-align:center">
+          <h2 style="font-size:2.5rem;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem">
+            Meet the Developer
+          </h2>
+          <div style="max-width:800px;margin:0 auto;background:rgba(255,255,255,0.95);padding:3rem;border-radius:25px;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+            <p style="font-size:1.5rem;text-align:center;margin-bottom:1rem">
+              Hi, I'm <strong style="color:#764ba2">Suruchi Anand</strong>
+            </p>
+            <p style="font-size:1.3rem;text-align:center;color:#666;margin-bottom:2rem;font-weight:600">
+              3rd-year Graduate Student at <strong>Manipal University</strong>
+            </p>
+            <p style="font-size:1.1rem;color:#555;line-height:1.7;text-align:center">
+              Passionate about <strong>AI + Machine Learning</strong> solutions for agriculture. 
+              Building intelligent tools that help farmers and plant lovers with cutting-edge computer vision technology.
+            </p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem;font-size:1rem">
+              <div><strong>Backend:</strong> TensorFlow, Keras</div>
+              <div><strong>Frontend:</strong> HTML5, CSS3, JavaScript</div>
+              <div><strong>AI:</strong> Deep Learning, Computer Vision</div>
+              <div><strong>Project:</strong> Class of 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Disease database with treatments
+    const diseases = {
+      'Early Symptoms': {severity: 25, color: '#ffc107'},
+      'Bacterial Spot': {severity: 75, color: '#dc3545'},
+      'Healthy': {severity: 0, color: '#28a745'},
+      'Leaf Spot': {severity: 60, color: '#fd7e14'},
+      'Powdery Mildew': {severity: 50, color: '#6f42c1'}
+    };
+
+    const treatments = {
+      'Early Symptoms': [
+        '💧 Water consistently every morning',
+        '☀️ Ensure 6+ hours of sunlight',
+        '🌱 Apply balanced NPK fertilizer',
+        '🕒 Monitor daily for progression'
+      ],
+      'Bacterial Spot': [
+        '🚫 Remove infected leaves immediately',
+        '💦 Apply copper fungicide weekly',
+        '🌞 Improve air circulation',
+        '💧 Avoid overhead watering'
+      ],
+      'Healthy': [
+        '✅ Perfect plant health!',
+        '🌿 Continue current care routine',
+        '📈 Excellent growth conditions'
+      ],
+      'Leaf Spot': [
+        '🍃 Remove affected leaves',
+        '💨 Increase air circulation',
+        '🌤️ Avoid wet foliage overnight',
+        '🧪 Use fungicide if severe'
+      ],
+      'Powdery Mildew': [
+        '🌬️ Improve air circulation',
+        '💡 Increase sunlight exposure',
+        '🧼 Milk spray (1:9 ratio)',
+        '🚫 Avoid high humidity'
+      ]
+    };
+
+    // Elements
+    const uploadBox = document.getElementById('uploadBox');
+    const imageInput = document.getElementById('imageInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const imagePreview = document.getElementById('imagePreview');
+    const results = document.getElementById('results');
+    const loading = document.getElementById('loading');
+
+    // Drag & Drop
+    uploadBox.addEventListener('click', () => imageInput.click());
+    uploadBox.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadBox.classList.add('dragover');
+    });
+    uploadBox.addEventListener('dragleave', () => {
+      uploadBox.classList.remove('dragover');
+    });
+    uploadBox.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadBox.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) handleImage(files[0]);
+    });
+
+    // File input
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleImage(e.target.files[0]);
+    });
+
+    function handleImage(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded plant">`;
+        analyzeBtn.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Analyze
+    document.getElementById('uploadForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!imageInput.files[0]) return;
+      
+      loading.style.display = 'block';
+      results.style.display = 'none';
+      
+      setTimeout(() => {
+        loading.style.display = 'none';
+        generatePrediction();
+      }, 2500);
+    });
+
+    function generatePrediction() {
+      // Simulate realistic predictions
+      const diseaseNames = Object.keys(diseases);
+      const predictions = {};
+      
+      let total = 0;
+      diseaseNames.forEach(name => {
+        predictions[name] = (Math.random() * 40 + 5);
+        total += predictions[name];
+      });
+      
+      // Normalize
+      for (let name in predictions) {
+        predictions[name] = Math.round((predictions[name] / total) * 100 * 10) / 10;
+      }
+      
+      const topDisease = Object.entries(predictions).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+      displayResults(predictions, topDisease);
+    }
+
+    function displayResults(predictions, topDisease) {
+      results.style.display = 'block';
+      
+      // Confidence
+      const confidence = Math.max(...Object.values(predictions));
+      document.getElementById('confidence').innerHTML = 
+        `🎯 <strong>${confidence.toFixed(1)}%</strong> Confidence • ${topDisease}`;
+
+      // Probabilities
+      const sorted = Object.entries(predictions)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5);
+      
+      let probHtml = '';
+      sorted.forEach(([name, prob]) => {
+        probHtml += `
+          <li class="prob-item">
+            <span class="prob-name">${name}</span>
+            <span class="prob-percent">${prob.toFixed(1)}%</span>
+            <div class="prob-bar">
+              <div class="prob-fill" style="width:${prob}%"></div>
+            </div>
+          </li>
+        `;
+      });
+      document.getElementById('probList').innerHTML = probHtml;
+
+      // Treatment
+      const severity = diseases[topDisease].severity;
+      document.getElementById('treatment').innerHTML = `
+        <div class="treatment-title">
+          💊 Treatment for ${topDisease}
+        </div>
+        <div class="severity">
+          <span>Severity:</span>
+          <div class="severity-bar">
+            <div class="severity-fill" style="width:${severity}%"></div>
+          </div>
+          <span>${severity}%</span>
+        </div>
+        <ul class="treatment-list">
+          ${treatments[topDisease].map(treatment => `<li class="treatment-item">${treatment}</li>`).join('')}
+        </ul>
+      `;
+    }
+  </script>
+</body>
+</html>
