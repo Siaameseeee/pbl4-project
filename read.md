@@ -1,0 +1,13 @@
+Problem statement
+plant diseases significantly reduce the agricultural productivity and quality.
+Traditional disease detection relies on manual inspection by experts, which is time-consuming, costly, and often inaccessible to small-scale farmers.Delayed or inaccurate identification leads to improper treatment and crop loss. Therefore, there is a need for an automated, accurate, and real-time plant disease detection system using Artificial Intelligence and image processing techniques.
+
+The proposed system is an automated plant disease detection platform that integrates deep learning with web technology. Users upload plant leaf images through a web interface. The backend processes the image, applies preprocessing techniques, and feeds it into a trained CNN model. The model predicts the disease class along with probability scores. The system then displays the detected disease, confidence percentage, and recommended treatment measures.
+
+Over the years, several approaches have been developed for plant disease detection. The earliest and most common method is manual inspection, where farmers or plant pathologists visually examine leaves for symptoms such as discoloration, spots, or texture changes. Although effective when performed by experts, this method is slow and prone to human error.
+
+With advancements in computer vision, image processing techniques were introduced. These systems rely on segmentation, thresholding, and color or texture analysis to identify diseased regions in plant leaves. However, their performance is highly sensitive to lighting conditions, background noise, and image quality.
+
+Machine learning approaches later improved detection accuracy by using classifiers such as Support Vector Machines, K-Nearest Neighbors, and Random Forest. These systems depend on manually extracted features, which limits their scalability and robustness.
+
+More recent research focuses on deep learning, particularly Convolutional Neural Networks. CNN models automatically learn features from images and have achieved high accuracy on benchmark datasets such as PlantVillage. Despite their performance, many existing solutions remain confined to research environments and lack real-time web deployment or user-friendly interfaces.
