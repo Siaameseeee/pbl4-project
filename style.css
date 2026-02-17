@@ -1,0 +1,186 @@
+/* ===== Global ===== */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: #f5fff5;
+  color: #333;
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3 {
+  color: #2e7d32;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2e7d32;
+  color: white;
+  padding: 15px 10%;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar ul li a {
+  color: white;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.navbar ul li a:hover {
+  color: #c8e6c9;
+}
+
+/* ===== Hero ===== */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  background: linear-gradient(to right, #c8e6c9, #e8f5e9);
+}
+
+.upload-form {
+  margin-top: 30px;
+}
+
+.drop-area {
+  border: 2px dashed #2e7d32;
+  padding: 25px;
+  border-radius: 12px;
+  background: white;
+  display: inline-block;
+}
+
+input[type="file"] {
+  margin-top: 10px;
+}
+
+button {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: #1b5e20;
+}
+
+/* Loader */
+#loader {
+  display: none;
+  margin-top: 20px;
+  font-weight: 600;
+  color: #1b5e20;
+}
+
+/* ===== Result Card ===== */
+.result-card {
+  background: #e0f2f1;
+  border-left: 6px solid #2e7d32;
+  margin: 40px auto;
+  padding: 20px;
+  max-width: 600px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.uploaded-img {
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.disease-name {
+  background: #2e7d32;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.progress {
+  background: #c8e6c9;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  background: #2e7d32;
+  color: white;
+  padding: 5px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+/* ===== Workflow ===== */
+.workflow {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f9fff9;
+}
+
+.workflow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.step {
+  background: white;
+  border: 1px solid #c8e6c9;
+  border-radius: 10px;
+  width: 250px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+/* ===== About & Developer ===== */
+.about, .developer {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.about {
+  background: #e8f5e9;
+}
+
+/* ===== Footer ===== */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #2e7d32;
+  color: white;
+}
+
+footer a {
+  color: #a5d6a7;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+  }
+
+  .workflow-steps {
+    flex-direction: column;
+    align-items: center;
+  }
+}

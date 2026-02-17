@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlantIQ – AI Plant Disease Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+<header>
+  <div class="navbar">
+    <div class="logo">🌿 PlantIQ</div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#workflow">Workflow</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+<section class="hero">
+  <h1>AI-Powered Plant Disease Detection</h1>
+  <p>Upload your plant image and let AI detect diseases instantly.</p>
+
+  <form action="/predict" method="POST" enctype="multipart/form-data" 
+        class="upload-form" onsubmit="showLoader()">
+
+    <div class="drop-area">
+      <p>Drag & Drop Plant Image</p>
+      <input type="file" name="file" accept="image/*" required />
+    </div>
+
+    <br>
+    <button type="submit">Upload & Analyze</button>
+
+    <div id="loader">Analyzing plant health… 🌿</div>
+  </form>
+
+  {% if uploaded_image %}
+  <div class="result-card">
+    <h3>Uploaded Image</h3>
+    <img src="{{ url_for('static', filename=uploaded_image) }}" class="uploaded-img">
+  </div>
+  {% endif %}
+
+  {% if prediction %}
+  <div class="result-card">
+    <h3>Prediction Result</h3>
+
+    <h2 class="disease-name">{{ predicted_class }}</h2>
+
+    <div class="progress">
+      <div class="progress-bar" style="width: {{ predicted_percentage }}%">
+        {{ predicted_percentage }}%
+      </div>
+    </div>
+
+    <h3>Disease Probabilities:</h3>
+    <ul>
+      {% for class_name, prob in prediction.items() %}
+      <li>{{ class_name }} : {{ prob }}%</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</section>
+
+
+<section id="workflow" class="workflow">
+  <h2>System Workflow</h2>
+  <div class="workflow-steps">
+    <div class="step">
+      <h3>Step 1</h3>
+      <p>Upload plant image</p>
+    </div>
+
+    <div class="step">
+      <h3>Step 2</h3>
+      <p>AI analyzes disease</p>
+    </div>
+
+    <div class="step">
+      <h3>Step 3</h3>
+      <p>Prediction generated</p>
+    </div>
+
+    <div class="step">
+      <h3>Step 4</h3>
+      <p>Treatment suggested</p>
+    </div>
+  </div>
+</section>
+
+
+<section id="about" class="about">
+  <h2>About PlantIQ</h2>
+  <p>
+    PlantIQ is an AI-powered system built with Flask and TensorFlow
+    to detect plant diseases from leaf images and provide treatment suggestions.
+  </p>
+</section>
+
+
+<section class="developer">
+  <h2>Developer</h2>
+  <p>
+    Developed as an academic AI project integrating Deep Learning
+    with real-world agricultural applications.
+  </p>
+</section>
+
+
+<footer id="contact">
+  <h2>Contact</h2>
+  <p>Email: support@plantiq.com</p>
+  <p>©️ 2026 PlantIQ</p>
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
+
